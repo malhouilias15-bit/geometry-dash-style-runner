@@ -23,34 +23,24 @@ const snake = {
 
 let onGround = false;
 
-// ==================== WALLS & SPIKES ====================
+// ==================== OBSTACLES ====================
 let obstacles = [];
 const SPEED = 5;
 
 function createObstacle() {
     const wallHeight = Math.floor(Math.random() * 40) + 40;
 
-    const obstacle = {
+    return {
         x: WIDTH + 50,
         wall: {
             y: 350 - wallHeight,
             width: 30,
             height: wallHeight
         },
-        spike: null
+        hasSpikes: score >= 10
     };
-
-    // AFTER SCORE 10 → ADD SPIKE WITH WALL
-    if (score >= 10) {
-        obstacle.spike = {
-            size: 30
-        };
-    }
-
-    return obstacle;
 }
 
-// spawn first wall
 obstacles.push(createObstacle());
 
 // ==================== INPUT ====================
@@ -67,7 +57,7 @@ function gameLoop() {
     if (gameOver) {
         ctx.fillStyle = "#000";
         ctx.font = "36px Arial";
-        ctx.fillText("GAME OVER - Refresh", 220, 200);
+        ctx.fillText("GAME OVER - Refresh", 200, 200);
         return;
     }
 
@@ -88,7 +78,7 @@ function gameLoop() {
 
     // ----- COLLISION -----
     for (let o of obstacles) {
-        // WALL COLLISION
+        // WALL
         if (
             snake.x < o.x + o.wall.width &&
             snake.x + snake.width > o.x &&
@@ -98,12 +88,15 @@ function gameLoop() {
             gameOver = true;
         }
 
-        // SPIKE COLLISION (only if exists)
-        if (o.spike) {
+        // SPIKES
+        if (o.hasSpikes) {
+            const spikeWidth = 60;
+            const spikeHeight = 30;
+
             if (
                 snake.x + snake.width > o.x &&
-                snake.x < o.x + o.spike.size &&
-                snake.y + snake.height > 350 - o.spike.size
+                snake.x < o.x + spikeWidth &&
+                snake.y + snake.height > 350 - spikeHeight
             ) {
                 gameOver = true;
             }
@@ -111,7 +104,7 @@ function gameLoop() {
     }
 
     // ----- CLEAN & SPAWN -----
-    obstacles = obstacles.filter(o => o.x + 40 > 0);
+    obstacles = obstacles.filter(o => o.x + 80 > 0);
 
     if (
         obstacles.length === 0 ||
@@ -123,6 +116,7 @@ function gameLoop() {
     }
 
     // ==================== DRAW ====================
+
     // Ground
     ctx.fillStyle = "#00c800";
     ctx.fillRect(0, 350, WIDTH, 50);
@@ -132,15 +126,30 @@ function gameLoop() {
         ctx.fillStyle = "#8b4513";
         ctx.fillRect(o.x, o.wall.y, o.wall.width, o.wall.height);
 
-        // Spike (only after score 10)
-        if (o.spike) {
-            ctx.fillStyle = "#555";
-            ctx.beginPath();
-            ctx.moveTo(o.x, 350);
-            ctx.lineTo(o.x + o.spike.size / 2, 350 - o.spike.size);
-            ctx.lineTo(o.x + o.spike.size, 350);
-            ctx.closePath();
-            ctx.fill();
+        // Spikes (3 triangles like the image)
+        if (o.hasSpikes) {
+            const baseY = 350;
+            const size = 20;
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "white";
+            ctx.shadowColor = "white";
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = "black";
+
+            for (let i = 0; i < 3; i++) {
+                const spikeX = o.x + i * size;
+
+                ctx.beginPath();
+                ctx.moveTo(spikeX, baseY);
+                ctx.lineTo(spikeX + size / 2, baseY - size);
+                ctx.lineTo(spikeX + size, baseY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            ctx.shadowBlur = 0;
         }
     });
 
