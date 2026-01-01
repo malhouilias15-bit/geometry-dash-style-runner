@@ -1,14 +1,35 @@
 body {
     text-align: center;
     font-family: Arial, sans-serif;
-    background-color: #87ceeb; /* sky blue */
-    margin: 0;
-    padding: 0;
+    background: #eaeaea;
 }
 
 canvas {
-    border: 3px solid #000;
-    background-color: #00c800; /* grass */
+    background: #87ceeb;
+    border: 4px solid black;
     display: block;
-    margin: 0 auto;
+    margin: auto;
+}
+
+/* Mobile Jump Button */
+#jumpBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 36px;
+    background: black;
+    color: white;
+    border: 3px solid white;
+    display: none;
+    z-index: 10;
+}
+
+/* Show jump button only on mobile */
+@media (max-width: 768px) {
+    #jumpBtn {
+        display: block;
+    }
 }
