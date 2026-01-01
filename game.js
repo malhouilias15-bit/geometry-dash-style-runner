@@ -23,9 +23,18 @@ const snake = {
 
 let onGround = false;
 
+// ================= SPEED SYSTEM =================
+let speed = 5;              // base speed
+const MAX_SPEED = 14;       // god mode cap
+
+function updateSpeed() {
+    if (score >= 10) {
+        speed = Math.min(5 + Math.floor((score - 10) / 3), MAX_SPEED);
+    }
+}
+
 // ================= WALLS =================
 let walls = [];
-const SPEED = 5;
 
 function createWall() {
     const h = Math.random() * 40 + 40;
@@ -62,7 +71,7 @@ document.addEventListener("keydown", e => {
     if (e.code === "Space") jump();
 });
 
-// Mobile button
+// Mobile
 document.getElementById("jumpBtn").addEventListener("touchstart", e => {
     e.preventDefault();
     jump();
@@ -92,8 +101,8 @@ function loop() {
     }
 
     // Move obstacles
-    walls.forEach(w => w.x -= SPEED);
-    spikes.forEach(s => s.x -= SPEED);
+    walls.forEach(w => w.x -= speed);
+    spikes.forEach(s => s.x -= speed);
 
     // Wall collision
     walls.forEach(w => {
@@ -115,30 +124,34 @@ function loop() {
         ) gameOver = true;
     });
 
-    // Clean up
+    // Cleanup
     walls = walls.filter(w => w.x + w.w > 0);
     spikes = spikes.filter(s => s.x + s.size * s.count > 0);
 
-    // Spawn
+    // Spawn walls
     if (walls.length === 0 || walls[walls.length - 1].x < WIDTH - 300) {
         walls.push(createWall());
         score++;
         document.getElementById("score").textContent = score;
+        updateSpeed();
 
+        // Spikes spawn endlessly after score 10
         if (score >= 10) {
             spikes.push(createSpike());
         }
     }
 
-    // Draw ground
+    // ================= DRAW =================
+
+    // Ground
     ctx.fillStyle = "#00c800";
     ctx.fillRect(0, 350, WIDTH, 50);
 
-    // Draw walls
+    // Walls
     ctx.fillStyle = "#8b4513";
     walls.forEach(w => ctx.fillRect(w.x, w.y, w.w, w.h));
 
-    // Draw spikes (logo-style)
+    // Spikes (sharp logo style)
     ctx.fillStyle = "black";
     ctx.strokeStyle = "white";
     ctx.lineWidth = 3;
@@ -158,11 +171,17 @@ function loop() {
         }
     });
 
-    // Draw snake
+    // Snake
     ctx.fillStyle = "red";
     ctx.fillRect(snake.x, snake.y, snake.w, snake.h);
+
+    // Speed indicator (debug but cool)
+    ctx.fillStyle = "black";
+    ctx.font = "14px Arial";
+    ctx.fillText("Speed: " + speed, 10, 20);
 
     requestAnimationFrame(loop);
 }
 
 loop();
+
