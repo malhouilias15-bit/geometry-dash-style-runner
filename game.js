@@ -23,25 +23,33 @@ const snake = {
 
 let onGround = false;
 
-// ==================== OBSTACLES ====================
-let obstacles = [];
+// ==================== WALLS ====================
+let walls = [];
 const SPEED = 5;
 
-function createObstacle() {
-    const wallHeight = Math.floor(Math.random() * 40) + 40;
-
+function createWall() {
+    const h = Math.floor(Math.random() * 40) + 40;
     return {
         x: WIDTH + 50,
-        wall: {
-            y: 350 - wallHeight,
-            width: 30,
-            height: wallHeight
-        },
-        hasSpikes: score >= 10
+        y: 350 - h,
+        width: 30,
+        height: h
     };
 }
 
-obstacles.push(createObstacle());
+walls.push(createWall());
+
+// ==================== SPIKES ====================
+let spikes = [];
+
+function createSpike() {
+    const isDouble = Math.random() < 0.5; // 50% chance
+    return {
+        x: WIDTH + 50,
+        size: 20,
+        count: isDouble ? 2 : 1
+    };
+}
 
 // ==================== INPUT ====================
 document.addEventListener("keydown", (e) => {
@@ -73,46 +81,50 @@ function gameLoop() {
         onGround = false;
     }
 
-    // ----- MOVE OBSTACLES -----
-    obstacles.forEach(o => o.x -= SPEED);
+    // ----- MOVE OBJECTS -----
+    walls.forEach(w => w.x -= SPEED);
+    spikes.forEach(s => s.x -= SPEED);
 
-    // ----- COLLISION -----
-    for (let o of obstacles) {
-        // WALL
+    // ----- WALL COLLISION -----
+    for (let w of walls) {
         if (
-            snake.x < o.x + o.wall.width &&
-            snake.x + snake.width > o.x &&
-            snake.y < o.wall.y + o.wall.height &&
-            snake.y + snake.height > o.wall.y
+            snake.x < w.x + w.width &&
+            snake.x + snake.width > w.x &&
+            snake.y < w.y + w.height &&
+            snake.y + snake.height > w.y
         ) {
             gameOver = true;
         }
+    }
 
-        // SPIKES
-        if (o.hasSpikes) {
-            const spikeWidth = 60;
-            const spikeHeight = 30;
+    // ----- SPIKE COLLISION -----
+    for (let s of spikes) {
+        const spikeWidth = s.count * s.size;
+        const spikeHeight = s.size;
 
-            if (
-                snake.x + snake.width > o.x &&
-                snake.x < o.x + spikeWidth &&
-                snake.y + snake.height > 350 - spikeHeight
-            ) {
-                gameOver = true;
-            }
+        if (
+            snake.x + snake.width > s.x &&
+            snake.x < s.x + spikeWidth &&
+            snake.y + snake.height > 350 - spikeHeight
+        ) {
+            gameOver = true;
         }
     }
 
-    // ----- CLEAN & SPAWN -----
-    obstacles = obstacles.filter(o => o.x + 80 > 0);
+    // ----- CLEANUP -----
+    walls = walls.filter(w => w.x + w.width > 0);
+    spikes = spikes.filter(s => s.x + s.size * s.count > 0);
 
-    if (
-        obstacles.length === 0 ||
-        obstacles[obstacles.length - 1].x < WIDTH - 350
-    ) {
-        obstacles.push(createObstacle());
+    // ----- SPAWN WALLS -----
+    if (walls.length === 0 || walls[walls.length - 1].x < WIDTH - 300) {
+        walls.push(createWall());
         score++;
         document.getElementById("score").textContent = score;
+
+        // Spawn spike separately AFTER score 10
+        if (score >= 10 && Math.random() < 0.7) {
+            spikes.push(createSpike());
+        }
     }
 
     // ==================== DRAW ====================
@@ -121,37 +133,33 @@ function gameLoop() {
     ctx.fillStyle = "#00c800";
     ctx.fillRect(0, 350, WIDTH, 50);
 
-    obstacles.forEach(o => {
-        // Wall
-        ctx.fillStyle = "#8b4513";
-        ctx.fillRect(o.x, o.wall.y, o.wall.width, o.wall.height);
+    // Walls
+    ctx.fillStyle = "#8b4513";
+    walls.forEach(w => ctx.fillRect(w.x, w.y, w.width, w.height));
 
-        // Spikes (3 triangles like the image)
-        if (o.hasSpikes) {
-            const baseY = 350;
-            const size = 20;
+    // Spikes (triangle style)
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "white";
+    ctx.shadowColor = "white";
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = "black";
 
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "white";
-            ctx.shadowColor = "white";
-            ctx.shadowBlur = 10;
-            ctx.fillStyle = "black";
+    spikes.forEach(s => {
+        for (let i = 0; i < s.count; i++) {
+            const x = s.x + i * s.size;
+            const y = 350;
 
-            for (let i = 0; i < 3; i++) {
-                const spikeX = o.x + i * size;
-
-                ctx.beginPath();
-                ctx.moveTo(spikeX, baseY);
-                ctx.lineTo(spikeX + size / 2, baseY - size);
-                ctx.lineTo(spikeX + size, baseY);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-            }
-
-            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + s.size / 2, y - s.size);
+            ctx.lineTo(x + s.size, y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
         }
     });
+
+    ctx.shadowBlur = 0;
 
     // Snake
     ctx.fillStyle = "#ff0000";
