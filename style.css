@@ -2,36 +2,26 @@ body {
     text-align: center;
     font-family: Arial, sans-serif;
     background: #eaeaea;
-    margin: 0;
-    padding: 0;
 }
 
 canvas {
     background: #87ceeb;
-    border: 4px solid black;
-    display: block;
-    margin: auto;
+    border: 2px solid #000;
 }
 
-/* MOBILE JUMP BUTTON */
+/* JUMP BUTTON */
 #jumpBtn {
+    display: none;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: transparent;
+    padding: 20px 30px;
+    font-size: 22px;
+    background: red;
+    color: white;
     border: none;
-    padding: 0;
-    display: none;
-    z-index: 9999;
-}
-
-#jumpBtn img {
-    width: 100%;
-    height: 100%;
     border-radius: 50%;
+    z-index: 999;
 }
 
 /* SHOW ONLY ON MOBILE */
@@ -41,3 +31,5 @@ canvas {
     }
 }
 
+        
+    
