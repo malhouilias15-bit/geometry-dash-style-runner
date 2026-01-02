@@ -14,8 +14,8 @@ const scoreEl = document.getElementById("score");
 const snake = {
     x: 100,
     y: GROUND_Y - 30,
-    w: 40,
-    h: 30,
+    w: 32,
+    h: 24,
     vy: 0
 };
 
@@ -142,12 +142,13 @@ function loop() {
 
     // ---------------- DRAW ----------------
     // Ground
-    ctx.fillStyle = "#00c800";
-    ctx.fillRect(0, GROUND_Y, WIDTH, HEIGHT - GROUND_Y);
+   ctx.fillStyle = "#2ecc71"; // green
+ctx.beginPath();
+ctx.roundRect(snake.x, snake.y, snake.w, snake.h, 10);
+ctx.fill();
 
     // Snake
-    ctx.fillStyle = "red";
-    ctx.fillRect(snake.x, snake.y, snake.w, snake.h);
+    ctx.drawImage(snakeImg, snake.x, snake.y, snake.w, snake.h);
 
     // Walls
     ctx.fillStyle = "#8b4513";
