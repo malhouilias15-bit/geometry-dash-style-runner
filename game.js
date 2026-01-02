@@ -10,10 +10,14 @@ const GROUND_Y = 330;
 let score = 0;
 const scoreEl = document.getElementById("score");
 
+// ---------------- SNAKE IMAGE ----------------
+const snakeImg = new Image();
+snakeImg.src = "snake.png"; // MUST be in same folder
+
 // ---------------- SNAKE ----------------
 const snake = {
     x: 100,
-    y: GROUND_Y - 30,
+    y: GROUND_Y - 24,
     w: 32,
     h: 24,
     vy: 0
@@ -31,9 +35,9 @@ let speed = 5;
 let walls = [];
 let spikes = [];
 
+// WALL
 function createWall() {
     return {
-        type: "wall",
         x: WIDTH,
         w: 30,
         h: 60,
@@ -41,12 +45,12 @@ function createWall() {
     };
 }
 
-function createSpike(double = false) {
+// SPIKE
+function createSpike(doubleSpike = false) {
     return {
-        type: "spike",
         x: WIDTH,
         size: 30,
-        double: double
+        double: doubleSpike
     };
 }
 
@@ -65,7 +69,7 @@ document.addEventListener("keydown", e => {
 document.getElementById("jumpBtn").addEventListener("click", jump);
 
 // ---------------- COLLISION ----------------
-function rectHit(a, b) {
+function hit(a, b) {
     return (
         a.x < b.x + b.w &&
         a.x + a.w > b.x &&
@@ -75,9 +79,10 @@ function rectHit(a, b) {
 }
 
 // ---------------- GAME LOOP ----------------
-function loop() {
+function gameLoop() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
+    // GAME OVER
     if (gameOver) {
         ctx.fillStyle = "#000";
         ctx.font = "36px Arial";
@@ -85,7 +90,7 @@ function loop() {
         return;
     }
 
-    // SPEED UP AFTER SCORE 10
+    // SPEED SCALING
     if (score >= 10) {
         speed = 5 + Math.floor(score / 5);
     }
@@ -105,15 +110,14 @@ function loop() {
     walls.forEach(o => o.x -= speed);
     spikes.forEach(o => o.x -= speed);
 
-    // CLEAN
+    // CLEAN OLD
     walls = walls.filter(o => o.x + o.w > 0);
     spikes = spikes.filter(o => o.x + o.size * (o.double ? 2 : 1) > 0);
 
-    // SPAWN LOGIC
+    // SPAWN (WALLS OR SPIKES — NEVER BOTH)
     if (walls.length === 0 && spikes.length === 0) {
         if (score >= 10) {
-            const doubleSpike = Math.random() < 0.5;
-            spikes.push(createSpike(doubleSpike));
+            spikes.push(createSpike(Math.random() < 0.5));
         } else {
             walls.push(createWall());
         }
@@ -121,13 +125,14 @@ function loop() {
         scoreEl.textContent = score;
     }
 
-    // COLLISIONS
+    // WALL COLLISION
     walls.forEach(w => {
-        if (rectHit(snake, { x: w.x, y: w.y, w: w.w, h: w.h })) {
+        if (hit(snake, { x: w.x, y: w.y, w: w.w, h: w.h })) {
             gameOver = true;
         }
     });
 
+    // SPIKE COLLISION
     spikes.forEach(s => {
         const hitbox = {
             x: s.x,
@@ -135,19 +140,17 @@ function loop() {
             w: s.size * (s.double ? 2 : 1),
             h: s.size
         };
-        if (rectHit(snake, hitbox)) {
+        if (hit(snake, hitbox)) {
             gameOver = true;
         }
     });
 
     // ---------------- DRAW ----------------
     // Ground
-   ctx.fillStyle = "#2ecc71"; // green
-ctx.beginPath();
-ctx.roundRect(snake.x, snake.y, snake.w, snake.h, 10);
-ctx.fill();
+    ctx.fillStyle = "#00c800";
+    ctx.fillRect(0, GROUND_Y, WIDTH, HEIGHT - GROUND_Y);
 
-    // Snake
+    // Snake Image
     ctx.drawImage(snakeImg, snake.x, snake.y, snake.w, snake.h);
 
     // Walls
@@ -171,7 +174,8 @@ ctx.fill();
         }
     });
 
-    requestAnimationFrame(loop);
+    requestAnimationFrame(gameLoop);
 }
 
-loop();
+gameLoop();
+
