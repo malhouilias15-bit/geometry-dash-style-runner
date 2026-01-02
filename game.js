@@ -10,12 +10,16 @@ const GROUND_Y = 320;
 let score = 0;
 const scoreEl = document.getElementById("score");
 
+// ================== SNAKE IMAGE ==================
+const snakeImg = new Image();
+snakeImg.src = "snake.png";
+
 // ================== SNAKE ==================
 const snake = {
     x: 100,
-    y: GROUND_Y - 20,
-    w: 40,
-    h: 20,
+    y: GROUND_Y - 60,
+    w: 60,
+    h: 60,
     vy: 0
 };
 
@@ -39,8 +43,6 @@ function spawnWall() {
         h
     });
 }
-
-spawnWall();
 
 // ================== SPIKES ==================
 let spikes = [];
@@ -92,14 +94,13 @@ function loop() {
 
     // Speed scaling
     if (score >= 10) {
-        speed = 4 + (score - 10) * 0.15;
+        speed = 4 + (score - 10) * 0.2;
     }
 
     // Gravity
     snake.vy += GRAVITY;
     snake.y += snake.vy;
 
-    // Ground collision
     if (snake.y + snake.h >= GROUND_Y) {
         snake.y = GROUND_Y - snake.h;
         snake.vy = 0;
@@ -110,26 +111,30 @@ function loop() {
     walls.forEach(w => w.x -= speed);
     spikes.forEach(s => s.x -= speed);
 
-    // Collision: walls
-    for (let w of walls) {
-        if (
-            snake.x < w.x + w.w &&
-            snake.x + snake.w > w.x &&
-            snake.y < w.y + w.h &&
-            snake.y + snake.h > w.y
-        ) {
-            gameOver = true;
+    // Collision: walls (ONLY before score 10)
+    if (score < 10) {
+        for (let w of walls) {
+            if (
+                snake.x < w.x + w.w &&
+                snake.x + snake.w > w.x &&
+                snake.y < w.y + w.h &&
+                snake.y + snake.h > w.y
+            ) {
+                gameOver = true;
+            }
         }
     }
 
-    // Collision: spikes
-    for (let s of spikes) {
-        if (
-            snake.x + snake.w > s.x &&
-            snake.x < s.x + s.size &&
-            snake.y + snake.h > GROUND_Y - s.size
-        ) {
-            gameOver = true;
+    // Collision: spikes (ONLY after score 10)
+    if (score >= 10) {
+        for (let s of spikes) {
+            if (
+                snake.x + snake.w > s.x &&
+                snake.x < s.x + s.size &&
+                snake.y + snake.h > GROUND_Y - s.size
+            ) {
+                gameOver = true;
+            }
         }
     }
 
@@ -137,13 +142,25 @@ function loop() {
     walls = walls.filter(w => w.x + w.w > 0);
     spikes = spikes.filter(s => s.x + s.size > 0);
 
-    // Spawn logic
-    if (walls.length === 0 || walls[walls.length - 1].x < WIDTH - 500) {
-        spawnWall();
-        score++;
-        scoreEl.textContent = score;
+    // ================== SPAWNING LOGIC ==================
+    if (score < 10) {
+        // WALL MODE
+        spikes = []; // 🔥 remove spikes completely
 
-        if (score >= 10) spawnSpikes();
+        if (walls.length === 0 || walls[walls.length - 1].x < WIDTH - 500) {
+            spawnWall();
+            score++;
+            scoreEl.textContent = score;
+        }
+    } else {
+        // SPIKE MODE
+        walls = []; // 🔥 remove walls completely
+
+        if (spikes.length === 0 || spikes[spikes.length - 1].x < WIDTH - 350) {
+            spawnSpikes();
+            score++;
+            scoreEl.textContent = score;
+        }
     }
 
     // ================== DRAW ==================
@@ -165,9 +182,8 @@ function loop() {
         ctx.fill();
     });
 
-    // Snake
-    ctx.fillStyle = "red";
-    ctx.fillRect(snake.x, snake.y, snake.w, snake.h);
+    // Snake IMAGE
+    ctx.drawImage(snakeImg, snake.x, snake.y, snake.w, snake.h);
 
     requestAnimationFrame(loop);
 }
