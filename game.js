@@ -21,6 +21,7 @@ function unlockAudio() {
 ["click", "touchstart", "keydown"].forEach(evt => {
     document.addEventListener(evt, unlockAudio, { once: true });
 });
+
 // ---------------- CANVAS ----------------
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
