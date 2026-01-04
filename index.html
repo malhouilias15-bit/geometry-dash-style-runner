@@ -2,20 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Snake Jump</title>
+    <title>Snake Runner</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            background: #111;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background: #222;
+            display: block;
+            margin: 20px auto;
+            border: 3px solid #000;
+        }
+        #jumpBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: limegreen;
+            color: black;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-<canvas id="game"></canvas>
+<h1>🐍 Snake Runner</h1>
+<div>Score: <span id="score">0</span></div>
 
-<!-- MOBILE JUMP BUTTON -->
-<button id="jumpBtn">
-    <img src="jump.png" alt="Jump">
-</button>
+<canvas id="game" width="900" height="400"></canvas>
 
-<!-- MUSIC -->
+<button id="jumpBtn">JUMP</button>
+
 <audio id="bgMusic" src="geometry_dash_style_music.wav" loop></audio>
 
 <script src="game.js"></script>
