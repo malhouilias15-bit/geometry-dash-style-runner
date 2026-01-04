@@ -1,44 +1,39 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-/* MUSIC */
+const scoreEl = document.getElementById("score");
+const jumpBtn = document.getElementById("jumpBtn");
 const music = document.getElementById("bgMusic");
-let musicStarted = false;
 
+// ---------------- MUSIC ----------------
 function startMusic() {
-    if (!musicStarted) {
-        music.volume = 30;
+    if (music.paused) {
+        music.volume = 100;
         music.play().catch(() => {});
-        musicStarted = true;
     }
 }
 
-/* GAME SETTINGS */
-const gravity = 0.8;
-const jumpForce = -15;
-let speed = 6;
+// ---------------- GAME VARS ----------------
 let score = 0;
+let speed = 5;
 let gameOver = false;
 
-/* SNAKE (GREEN DOT) */
+const groundY = canvas.height - 60;
+
+// ---------------- SNAKE ----------------
 const snake = {
-    x: 150,
-    y: canvas.height - 120,
-    r: 14,
-    vy: 0
+    x: 120,
+    y: groundY - 20,
+    size: 20,
+    velY: 0,
+    gravity: 1,
+    jump: -16,
+    onGround: true
 };
 
-/* GROUND */
-const groundHeight = 80;
-
-/* OBSTACLES */
+// ---------------- OBSTACLES ----------------
 let obstacles = [];
-let frame = 0;
 
-/* SPAWN WALL (GROUND ONLY) */
 function spawnWall() {
     obstacles.push({
         type: "wall",
@@ -48,153 +43,140 @@ function spawnWall() {
     });
 }
 
-/* SPAWN SPIKES (AFTER SCORE 10) */
 function spawnSpike() {
-    const doubleSpike = Math.random() < 0.5;
-
     obstacles.push({
         type: "spike",
         x: canvas.width,
         width: 30,
         height: 30
-        size: 30
     });
-
-    if (doubleSpike) {
-        obstacles.push({
-            type: "spike",
-            x: canvas.width + 35,
-            size: 30
-        });
-    }
 }
 
-/* INPUT */
+// ---------------- INPUT ----------------
 function jump() {
-    if (gameOver) return;
-    snake.vy = jumpForce;
-    startMusic();
+    if (snake.onGround && !gameOver) {
+        snake.velY = snake.jump;
+        snake.onGround = false;
+        startMusic();
+    }
 }
 
 document.addEventListener("keydown", e => {
     if (e.code === "Space") jump();
 });
-document.addEventListener("mousedown", jump);
-document.getElementById("jumpBtn").addEventListener("touchstart", jump);
 
-/* GAME LOOP */
+jumpBtn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    jump();
+});
+
+// mobile detect
+if ("ontouchstart" in window) {
+    jumpBtn.style.display = "block";
+}
+
+// ---------------- GAME LOOP ----------------
 function update() {
     if (gameOver) return;
 
-    frame++;
-
-    /* PHYSICS */
-    snake.vy += gravity;
-    snake.y += snake.vy;
-
-    const groundY = canvas.height - groundHeight - snake.r;
-
-    if (snake.y > groundY) {
-        snake.y = groundY;
-        snake.vy = 0;
-    }
-
-    /* SPAWNING */
-    if (frame % 90 === 0) {
-        if (score < 10) {
-            spawnWall();
-        } else {
-            spawnSpike();
-        }
-    }
-
-    /* MOVE OBSTACLES */
-    obstacles.forEach(o => o.x -= speed);
-    obstacles = obstacles.filter(o => o.x > -100);
-
-    /* COLLISIONS */
-    obstacles.forEach(o => {
-        if (o.type === "wall") {
-            if (
-                snake.x + snake.r > o.x &&
-                snake.x - snake.r < o.x + o.width &&
-                snake.y + snake.r > canvas.height - groundHeight - o.height
-            ) {
-                gameOver = true;
-            }
-        }
-
-        if (o.type === "spike") {
-            if (
-                snake.x + snake.r > o.x &&
-                snake.x - snake.r < o.x + o.size &&
-                snake.y + snake.r > canvas.height - groundHeight
-            ) {
-                gameOver = true;
-            }
-        }
-    });
-
-    /* SCORE + SPEED */
-    if (frame % 120 === 0) {
-        score++;
-        if (score >= 10) speed += 0.3;
-    }
-}
-
-function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    /* SNAKE */
-    ctx.fillStyle = "#00ff6a";
-    ctx.beginPath();
-    ctx.arc(snake.x, snake.y, snake.r, 0, Math.PI * 2);
-    ctx.fill();
+    // speed scaling
+    if (score >= 10) speed += 0.002;
 
-    /* GROUND */
-    ctx.fillStyle = "#111";
-    ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
+    // snake physics
+    snake.velY += snake.gravity;
+    snake.y += snake.velY;
 
-    /* OBSTACLES */
-    obstacles.forEach(o => {
+    if (snake.y >= groundY - snake.size) {
+        snake.y = groundY - snake.size;
+        snake.velY = 0;
+        snake.onGround = true;
+    }
+
+    // spawn obstacles
+    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 300) {
+        if (score >= 10 && Math.random() < 0.5) {
+            spawnSpike();
+        } else {
+            spawnWall();
+        }
+    }
+
+    // move obstacles
+    for (let o of obstacles) o.x -= speed;
+    obstacles = obstacles.filter(o => o.x + o.width > 0);
+
+    // ---------------- COLLISION ----------------
+    for (let o of obstacles) {
         if (o.type === "wall") {
-            ctx.fillStyle = "#666";
-            ctx.fillRect(
-                o.x,
-                canvas.height - groundHeight - o.height,
-                o.width,
-                o.height
-            );
+            if (
+                snake.x + snake.size > o.x &&
+                snake.x < o.x + o.width &&
+                snake.y + snake.size > groundY - o.height
+            ) {
+                endGame();
+            }
         }
 
         if (o.type === "spike") {
-            ctx.fillStyle = "red";
+            if (
+                snake.x + snake.size > o.x &&
+                snake.x < o.x + o.width &&
+                snake.y + snake.size >= groundY - 5
+            ) {
+                endGame();
+            }
+        }
+    }
+
+    // score
+    score += 0.02;
+    scoreEl.textContent = Math.floor(score);
+
+    draw();
+    requestAnimationFrame(update);
+}
+
+// ---------------- DRAW ----------------
+function draw() {
+    // ground
+    ctx.fillStyle = "#00aa00";
+    ctx.fillRect(0, groundY, canvas.width, 60);
+
+    // snake (BIG GREEN DOT)
+    ctx.fillStyle = "lime";
+    ctx.beginPath();
+    ctx.arc(snake.x, snake.y + snake.size / 2, snake.size / 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // obstacles
+    for (let o of obstacles) {
+        if (o.type === "wall") {
+            ctx.fillStyle = "#666";
+            ctx.fillRect(o.x, groundY - o.height, o.width, o.height);
+        }
+
+        if (o.type === "spike") {
+            ctx.fillStyle = "#ccc";
             ctx.beginPath();
-            ctx.moveTo(o.x, canvas.height - groundHeight);
-            ctx.lineTo(o.x + o.size / 2, canvas.height - groundHeight - o.size);
-            ctx.lineTo(o.x + o.size, canvas.height - groundHeight);
+            ctx.moveTo(o.x, groundY);
+            ctx.lineTo(o.x + o.width / 2, groundY - o.height);
+            ctx.lineTo(o.x + o.width, groundY);
             ctx.closePath();
             ctx.fill();
         }
-    });
-
-    /* SCORE */
-    ctx.fillStyle = "white";
-    ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score, 20, 30);
-
-    if (gameOver) {
-        ctx.fillStyle = "red";
-        ctx.font = "48px Arial";
-        ctx.fillText("GAME OVER", canvas.width / 2 - 160, canvas.height / 2);
     }
 }
 
-function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
+// ---------------- GAME OVER ----------------
+function endGame() {
+    gameOver = true;
+    music.pause();
+    ctx.fillStyle = "red";
+    ctx.font = "48px Arial";
+    ctx.fillText("GAME OVER", canvas.width / 2 - 150, canvas.height / 2);
 }
 
-loop();
-
+// START
+update();
