@@ -1,3 +1,26 @@
+const music = document.getElementById("bgMusic");
+let musicUnlocked = false;
+
+// UNLOCK AUDIO (required by browser)
+function unlockAudio() {
+    if (musicUnlocked) return;
+
+    music.volume = 1.0;
+    music.muted = false;
+    music.currentTime = 0;
+
+    music.play().then(() => {
+        musicUnlocked = true;
+        console.log("MUSIC STARTED");
+    }).catch(err => {
+        console.log("Music blocked, waiting for user input...");
+    });
+}
+
+// FORCE unlock on ANY interaction
+["click", "touchstart", "keydown"].forEach(evt => {
+    document.addEventListener(evt, unlockAudio, { once: true });
+});
 // ---------------- CANVAS ----------------
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
