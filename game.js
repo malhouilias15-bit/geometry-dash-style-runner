@@ -225,3 +225,5 @@ function endGame() {
 // ---------------- START ----------------
 scoreEl.textContent = score;
 loop();
+
+    
