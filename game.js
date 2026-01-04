@@ -11,18 +11,19 @@ const music = document.getElementById("bgMusic");
 const GROUND_Y = 330;
 
 // ---------------- GAME STATE ----------------
-let score = 0;
+let score = 0;                 // counts obstacles passed
 let speed = 5;
 let gameOver = false;
+let musicStarted = false;
 
-// ---------------- MUSIC (MOBILE SAFE) ----------------
+// ---------------- MUSIC (GUARANTEED) ----------------
 function startMusic() {
-    if (!music) return;
-    music.volume = 1.0;      // MAX volume
-    music.muted = false;
-
-    if (music.paused) {
+    if (!musicStarted) {
+        music.volume = 1.0;
+        music.muted = false;
+        music.currentTime = 0;
         music.play().catch(() => {});
+        musicStarted = true;
     }
 }
 
@@ -30,7 +31,7 @@ function startMusic() {
 const snake = {
     x: 120,
     y: GROUND_Y - 16,
-    r: 16,            // size (big green dot)
+    r: 16,
     vy: 0,
     gravity: 1,
     jump: -15,
@@ -45,7 +46,8 @@ function spawnWall() {
         type: "wall",
         x: canvas.width,
         w: 28,
-        h: 65
+        h: 65,
+        scored: false
     });
 }
 
@@ -54,14 +56,15 @@ function spawnSpike() {
         type: "spike",
         x: canvas.width,
         w: 30,
-        h: 30
+        h: 30,
+        scored: false
     });
 }
 
 // ---------------- INPUT ----------------
 function jump() {
     if (snake.onGround && !gameOver) {
-        startMusic();             // MUSIC STARTS HERE (USER ACTION)
+        startMusic(); // must be inside user action
         snake.vy = snake.jump;
         snake.onGround = false;
     }
@@ -78,7 +81,7 @@ jumpBtn.addEventListener("touchstart", e => {
     jump();
 });
 
-// show button only on mobile
+// show mobile button
 if ("ontouchstart" in window) {
     jumpBtn.style.display = "block";
 }
@@ -90,7 +93,7 @@ function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // SPEED UP AFTER SCORE 10
-    if (score >= 10) speed += 0.01;
+    if (score >= 10) speed += 0.008;
 
     // GRAVITY
     snake.vy += snake.gravity;
@@ -103,7 +106,10 @@ function loop() {
     }
 
     // SPAWN OBSTACLES
-    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 300) {
+    if (
+        obstacles.length === 0 ||
+        obstacles[obstacles.length - 1].x < canvas.width - 320
+    ) {
         if (score >= 10 && Math.random() < 0.5) {
             spawnSpike();
         } else {
@@ -111,8 +117,18 @@ function loop() {
         }
     }
 
-    // MOVE OBSTACLES
-    for (let o of obstacles) o.x -= speed;
+    // MOVE + SCORE
+    for (let o of obstacles) {
+        o.x -= speed;
+
+        // SCORE WHEN PASSED
+        if (!o.scored && o.x + o.w < snake.x) {
+            score++;
+            o.scored = true;
+            scoreEl.textContent = score;
+        }
+    }
+
     obstacles = obstacles.filter(o => o.x + o.w > 0);
 
     // COLLISION
@@ -138,10 +154,6 @@ function loop() {
         }
     }
 
-    // SCORE
-    score += 0.03;
-    scoreEl.textContent = Math.floor(score);
-
     draw();
     requestAnimationFrame(loop);
 }
@@ -152,7 +164,7 @@ function draw() {
     ctx.fillStyle = "#00aa00";
     ctx.fillRect(0, GROUND_Y, canvas.width, 70);
 
-    // snake (green dot)
+    // snake (big green dot)
     ctx.fillStyle = "lime";
     ctx.beginPath();
     ctx.arc(snake.x, snake.y, snake.r, 0, Math.PI * 2);
@@ -187,4 +199,5 @@ function endGame() {
 }
 
 // ---------------- START ----------------
+scoreEl.textContent = score;
 loop();
