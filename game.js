@@ -7,9 +7,15 @@ const music = document.getElementById("bgMusic");
 
 // ---------------- MUSIC ----------------
 function startMusic() {
+    music.volume = 1.0; // MAX
+    music.muted = false;
+
     if (music.paused) {
-        music.volume = 100;
-        music.play().catch(() => {});
+        music.play().then(() => {
+            console.log("Music playing");
+        }).catch(err => {
+            console.log("Music blocked:", err);
+        });
     }
 }
 
