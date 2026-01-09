@@ -1,5 +1,5 @@
 // =======================
-// CANVAS SETUP
+// CANVAS
 // =======================
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -8,7 +8,13 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // =======================
-// AUDIO (100% WORKING)
+// CONSTANTS
+// =======================
+const GROUND_HEIGHT = 80;
+const GROUND_Y = canvas.height - GROUND_HEIGHT;
+
+// =======================
+// AUDIO
 // =======================
 const music = document.getElementById("bgMusic");
 let musicUnlocked = false;
@@ -18,11 +24,7 @@ function unlockAudio() {
     music.volume = 1.0;
     music.muted = false;
     music.currentTime = 0;
-
-    music.play().then(() => {
-        musicUnlocked = true;
-        console.log("MUSIC STARTED");
-    }).catch(() => {});
+    music.play().then(() => musicUnlocked = true).catch(() => {});
 }
 
 ["click", "touchstart", "keydown"].forEach(e =>
@@ -32,20 +34,20 @@ function unlockAudio() {
 // =======================
 // GAME STATE
 // =======================
-let gravity = 0.7;
+let gravity = 0.8;
 let speed = 6;
 let score = 0;
 let gameOver = false;
 
 // =======================
-// SNAKE
+// SNAKE (BIG GREEN DOT)
 // =======================
 const snake = {
     x: 120,
-    y: canvas.height - 120,
+    y: GROUND_Y - 20,
     r: 20,
     vy: 0,
-    jumpPower: -14,
+    jumpPower: -15,
     onGround: true
 };
 
@@ -57,7 +59,7 @@ let spikes = [];
 let spawnTimer = 0;
 
 // =======================
-// CONTROLS
+// INPUT
 // =======================
 function jump() {
     if (snake.onGround && !gameOver) {
@@ -70,7 +72,6 @@ document.addEventListener("keydown", e => {
     if (e.code === "Space") jump();
 });
 
-// MOBILE BUTTON
 const jumpBtn = document.getElementById("jumpBtn");
 if (jumpBtn) {
     jumpBtn.addEventListener("touchstart", e => {
@@ -80,25 +81,24 @@ if (jumpBtn) {
 }
 
 // =======================
-// SPAWN FUNCTIONS
+// SPAWN
 // =======================
 function spawnWall() {
     walls.push({
         x: canvas.width,
-        y: canvas.height - 80,
-        w: 60,
-        h: 80,
+        y: GROUND_Y - 70,
+        w: 55,
+        h: 70,
         passed: false
     });
 }
 
 function spawnSpike() {
-    const doubleSpike = Math.random() < 0.5;
     spikes.push({
         x: canvas.width,
-        y: canvas.height - 40,
-        size: 40,
-        count: doubleSpike ? 2 : 1
+        y: GROUND_Y,
+        size: 35,
+        count: Math.random() < 0.5 ? 2 : 1
     });
 }
 
@@ -113,11 +113,11 @@ function rectCircleCollide(rect, circle) {
     return dx * dx + dy * dy < circle.r * circle.r;
 }
 
-function spikeCollide(spike) {
+function spikeHit(s) {
     return (
-        snake.x + snake.r > spike.x &&
-        snake.x - snake.r < spike.x + spike.size * spike.count &&
-        snake.y + snake.r > spike.y
+        snake.x + snake.r > s.x &&
+        snake.x - snake.r < s.x + s.size * s.count &&
+        snake.y + snake.r >= GROUND_Y
     );
 }
 
@@ -127,17 +127,15 @@ function spikeCollide(spike) {
 function update() {
     if (gameOver) return;
 
-    // Snake physics
     snake.vy += gravity;
     snake.y += snake.vy;
 
-    if (snake.y >= canvas.height - 100) {
-        snake.y = canvas.height - 100;
+    if (snake.y + snake.r >= GROUND_Y) {
+        snake.y = GROUND_Y - snake.r;
         snake.vy = 0;
         snake.onGround = true;
     }
 
-    // Spawn logic
     spawnTimer++;
     if (spawnTimer > 90) {
         spawnWall();
@@ -145,27 +143,23 @@ function update() {
         spawnTimer = 0;
     }
 
-    // Move walls
     walls.forEach(w => {
         w.x -= speed;
 
         if (!w.passed && w.x + w.w < snake.x) {
             w.passed = true;
             score++;
-
             if (score >= 10) speed += 0.3;
         }
 
         if (rectCircleCollide(w, snake)) gameOver = true;
     });
 
-    // Move spikes
     spikes.forEach(s => {
         s.x -= speed;
-        if (spikeCollide(s)) gameOver = true;
+        if (spikeHit(s)) gameOver = true;
     });
 
-    // Cleanup
     walls = walls.filter(w => w.x + w.w > 0);
     spikes = spikes.filter(s => s.x + s.size * s.count > 0);
 }
@@ -178,7 +172,7 @@ function draw() {
 
     // Ground
     ctx.fillStyle = "#222";
-    ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
+    ctx.fillRect(0, GROUND_Y, canvas.width, GROUND_HEIGHT);
 
     // Snake
     ctx.fillStyle = "lime";
@@ -187,19 +181,17 @@ function draw() {
     ctx.fill();
 
     // Walls
-    ctx.fillStyle = "gray";
-    walls.forEach(w =>
-        ctx.fillRect(w.x, w.y, w.w, w.h)
-    );
+    ctx.fillStyle = "#777";
+    walls.forEach(w => ctx.fillRect(w.x, w.y, w.w, w.h));
 
     // Spikes
     ctx.fillStyle = "red";
     spikes.forEach(s => {
         for (let i = 0; i < s.count; i++) {
             ctx.beginPath();
-            ctx.moveTo(s.x + i * s.size, s.y + s.size);
-            ctx.lineTo(s.x + s.size / 2 + i * s.size, s.y);
-            ctx.lineTo(s.x + s.size + i * s.size, s.y + s.size);
+            ctx.moveTo(s.x + i * s.size, GROUND_Y);
+            ctx.lineTo(s.x + s.size / 2 + i * s.size, GROUND_Y - s.size);
+            ctx.lineTo(s.x + s.size + i * s.size, GROUND_Y);
             ctx.fill();
         }
     });
@@ -225,4 +217,3 @@ function loop() {
 }
 
 loop();
-
