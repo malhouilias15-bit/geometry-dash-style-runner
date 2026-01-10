@@ -1,3 +1,7 @@
+document.addEventListener("keydown", e => {
+  console.log("KEY:", e.code);
+});
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
