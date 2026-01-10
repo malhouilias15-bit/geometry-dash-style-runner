@@ -1,53 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
->
+<head>
     <meta charset="UTF-8">
     <title>Snake Runner</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            background: #111;
-            color: white;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        canvas {
-            background: #222;
-            display: block;
-            margin: 20px auto;
-            border: 3px solid #000;
-        }
-        #jumpBtn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: limegreen;
-            color: black;
-            font-size: 20px;
-            font-weight: bold;
-            border: none;
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>🐍 Snake Runner</h1>
-<div>Score: <span id="score">0</span></div>
+    <canvas id="gameCanvas"></canvas>
 
-<canvas id="game" width="900" height="400"></canvas>
+    <!-- MUSIC (starts on first jump) -->
+    <audio id="bgMusic" src="geometry_dash_style_music.wav" loop></audio>
 
-<button id="jumpBtn">JUMP</button>
-
-<audio id="bgMusic" src="geometry_dash_style_music.wav" loop preload="auto"></audio>
-
-<script src="game_v2.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>
