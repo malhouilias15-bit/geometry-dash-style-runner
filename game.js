@@ -70,20 +70,21 @@ function spawnObstacle() {
 
 // ================= INPUT =================
 function jump() {
+    if (!musicStarted) {
+        music.currentTime = 0;
+        music.volume = 1.0;
+        music.play().then(() => {
+            musicStarted = true;
+        }).catch(err => {
+            console.log("Audio blocked:", err);
+        });
+    }
+
     if (onGround && !gameOver) {
         snake.vy = snake.jump;
         onGround = false;
     }
 }
-
-document.addEventListener("keydown", e => {
-    if (e.code === "Space") jump();
-});
-
-canvas.addEventListener("touchstart", e => {
-    e.preventDefault();
-    jump();
-});
 
 // ================= COLLISION =================
 function circleRect(cx, cy, r, rx, ry, rw, rh) {
