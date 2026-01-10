@@ -1,35 +1,23 @@
-html, body {
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
     background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
 canvas {
-    display: block;
-    background: #1b1b1b;
-}
-
-/* MOBILE JUMP BUTTON */
-#jumpBtn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 80px;
-    height: 80px;
-    border: none;
-    background: transparent;
-    display: none;
-}
-
-#jumpBtn img {
-    width: 100%;
-    height: 100%;
-}
-
-/* SHOW BUTTON ONLY ON MOBILE */
-@media (pointer: coarse) {
-    #jumpBtn {
-        display: block;
-    }
+    background: linear-gradient(#87ceeb, #bfe9ff);
+    border: 3px solid #000;
+    max-width: 100%;
+    max-height: 100%;
+    touch-action: none; /* IMPORTANT for mobile jump */
 }
