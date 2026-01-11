@@ -1,23 +1,32 @@
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
 body {
-    margin: 0;
-    padding: 0;
-    background: #111;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #111;
+  color: white;
 }
 
 canvas {
-    background: linear-gradient(#87ceeb, #bfe9ff);
-    border: 3px solid #000;
-    max-width: 100%;
-    max-height: 100%;
-    touch-action: none; /* IMPORTANT for mobile jump */
+  background: #87ceeb;
+  border: 3px solid black;
+  display: block;
+  margin: 10px auto;
+}
+
+#score {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+#jumpBtn {
+  display: none;
+  width: 90px;
+  margin: 10px auto;
+}
+
+/* show button only on mobile */
+@media (max-width: 768px) {
+  #jumpBtn {
+    display: block;
+  }
 }
