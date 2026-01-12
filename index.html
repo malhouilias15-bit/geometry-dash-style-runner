@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Snake Jump</title>
+    <title>Snake Runner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<canvas id="game"></canvas>
+<h1>Snake Runner</h1>
+<div id="score">Score: 0</div>
 
-<audio id="bgMusic" preload="auto" loop>
-    <source src="geometry_dash_style_music.wav" type="audio/wav">
-</audio>
+<canvas id="gameCanvas" width="800" height="400"></canvas>
 
-<script src="game_v2.js"></script>
+<!-- Mobile Jump Button -->
+<button id="jumpBtn">JUMP</button>
+
+<script src="game.js"></script>
 </body>
 </html>
