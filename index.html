@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Snake Jump</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Snake Jump</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+}
+</style>
 </head>
+
 <body>
 
-<h1>🐍 Snake Jump</h1>
-<div id="score">Score: 0</div>
+<!-- THIS MUST EXIST -->
+<canvas id="game"></canvas>
 
-<canvas id="gameCanvas" width="800" height="400"></canvas>
+<audio id="bgMusic" src="geometry_dash_style_music.wav" loop></audio>
 
-<!-- MOBILE JUMP BUTTON -->
-<img id="jumpBtn" src="jump.png" alt="Jump">
-
-<!-- MUSIC -->
-<audio id="bgMusic" src="./geometry_dash_style_music.wav" preload="auto" loop></audio>
-
+<!-- SCRIPT MUST BE LAST -->
 <script src="game_v2.js"></script>
+
 </body>
 </html>
