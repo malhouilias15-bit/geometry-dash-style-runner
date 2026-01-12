@@ -1,4 +1,13 @@
-console.log("GAME JS LOADED");
+window.onload = () => {
+    console.log("GAME JS LOADED");
+
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // ⬇️ EVERYTHING ELSE GOES BELOW ⬇️
 
 // ===== CANVAS =====
 const canvas = document.getElementById("game");
