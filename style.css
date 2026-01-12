@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+canvas {
+  background: #222;
+  display: block;
+  margin: 20px auto;
+  border: 2px solid white;
+}
+
+#skinsBtn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: yellow;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#skinsMenu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+  border: 2px solid white;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.skins button {
+  margin: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
