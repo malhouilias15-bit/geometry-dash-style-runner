@@ -1,3 +1,19 @@
+const music = document.getElementById("bgMusic");
+let musicStarted = false;
+
+function startMusic() {
+    if (!musicStarted && music) {
+        music.volume = 1;
+        music.currentTime = 0;
+        music.play().then(() => {
+            console.log("🎵 Music started");
+        }).catch(err => {
+            console.log("Music blocked:", err);
+        });
+        musicStarted = true;
+    }
+}
+
 /* ========= HARD SAFETY CHECK ========= */
 console.log("game_v2.js loaded");
 
