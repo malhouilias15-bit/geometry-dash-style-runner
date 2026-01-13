@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake Jump</title>
+    <style>
+        body {
+            margin: 0;
+            background: #111;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+            background: #111;
+        }
+
+        #skinsButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: yellow;
+            color: black;
+            font-weight: bold;
+            padding: 10px 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 10;
+        }
+
+        #skinsMenu {
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            background: #222;
+            padding: 10px;
+            display: none;
+            color: white;
+            z-index: 10;
+        }
+
+        .skin {
+            margin: 6px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<button id="skinsButton">Snake Skins</button>
+
+<div id="skinsMenu"></div>
+
+<canvas id="gameCanvas" width="900" height="450"></canvas>
+
+<!-- IMPORTANT LINE -->
+<script src="game_v2.js"></script>
+
+</body>
+</html>
