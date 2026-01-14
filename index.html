@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Snake Runner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- UI TOP LEFT -->
+<div id="ui">
+  <button id="skinsBtn">🐍 Snake Skins</button>
+  <button id="shopBtn">🛒 Shop</button>
+  <button id="statsBtn">🏆 Stats</button>
+
+  <!-- SKINS MENU -->
+  <div id="skinsMenu" class="hidden">
+    <h3>Choose Skin</h3>
+    <button data-skin="green">Green (Default)</button>
+    <button data-skin="blue">Blue (10+)</button>
+    <button data-skin="purple">Purple (20+)</button>
+    <button data-skin="yellow">Yellow (30+)</button>
+    <button data-skin="orange">Orange (40+)</button>
+    <button data-skin="rainbow">🌈 Rainbow (100+)</button>
+  </div>
+
+  <!-- SHOP MENU -->
+  <div id="shopMenu" class="hidden">
+    <h3>Shop</h3>
+    <p>More items coming soon 👀</p>
+  </div>
+
+  <!-- STATS MENU -->
+  <div id="statsMenu" class="hidden">
+    <h3>Your Stats</h3>
+    <p id="topScoreText">Top Score: 0</p>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div id="score">Score: 0</div>
+
+<canvas id="game"></canvas>
+
+<script src="game.js"></script>
+</body>
+</html>
