@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #111;
+  touch-action: manipulation;
+}
+
+canvas {
+  display: block;
+  background: linear-gradient(#87ceeb, #cfefff);
+}
+
+#username {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00ffcc;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 15;
+}
+
+#score {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 18px;
+  z-index: 10;
+}
+
+#money {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  color: #00ff99;
+  font-size: 18px;
+  z-index: 10;
+}
+
+#ui {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+}
+
+#skinsBtn {
+  padding: 10px;
+  font-size: 16px;
+  background: gold;
+  border: none;
+  border-radius: 6px;
+}
+
+#skinsMenu {
+  margin-top: 8px;
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#skinsMenu button {
+  width: 100%;
+  margin: 4px 0;
+}
+
+#shopBtn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px;
+  background: #ff9900;
+  border: none;
+  border-radius: 6px;
+}
+
+#shopMenu {
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.hidden {
+  display: none;
+}
