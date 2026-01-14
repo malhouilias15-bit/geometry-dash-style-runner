@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #111;
+  touch-action: manipulation;
+}
+
+canvas {
+  display: block;
+  background: linear-gradient(#87ceeb, #cfefff);
+}
+
+#score {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 18px;
+  z-index: 10;
+}
+
+#money {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  color: gold;
+  font-size: 18px;
+  z-index: 10;
+}
+
+#shopBtn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  background: gold;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#shop {
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+  z-index: 10;
+}
+
+#shop button {
+  padding: 8px;
+  margin-top: 6px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
