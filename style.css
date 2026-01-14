@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  touch-action: manipulation;
+  font-family: Arial, sans-serif;
+}
+
+#score {
+  position: fixed;
+  top: 10px;
+  left: 120px;
+  color: white;
+  font-size: 18px;
+  z-index: 10;
+}
+
+#skinsBtn {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  background: yellow;
+  border: none;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#skinsMenu {
+  position: fixed;
+  top: 45px;
+  left: 8px;
+  background: #111;
+  border: 2px solid yellow;
+  padding: 8px;
+  z-index: 10;
+}
+
+#skinsMenu button {
+  display: block;
+  margin: 5px 0;
+  width: 120px;
+}
+
+.hidden {
+  display: none;
+}
+
+canvas {
+  display: block;
+}
