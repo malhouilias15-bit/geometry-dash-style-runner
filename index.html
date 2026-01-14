@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Snake Runner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ui">
+  <button id="skinsBtn">🐍 Snake Skins</button>
+  <div id="skinsMenu" class="hidden">
+    <h3>Choose Skin</h3>
+    <button data-skin="green">Green (Default)</button>
+    <button data-skin="blue">Blue (10+)</button>
+    <button data-skin="purple">Purple (20+)</button>
+    <button data-skin="yellow">Yellow (30+)</button>
+    <button data-skin="orange">Orange (40+)</button>
+    <button data-skin="rainbow">🌈 Rainbow (100+)</button>
+  </div>
+</div>
+
+<div id="username"></div>
+<div id="score">Score: 0</div>
+<div id="money">$0</div>
+
+<button id="shopBtn">🛒 Shop</button>
+<div id="shopMenu" class="hidden">
+  <h3>Shop</h3>
+  <button id="skipBtn">Skip 10 Scores – $20</button>
+</div>
+
+<canvas id="game"></canvas>
+
+<script src="game.js"></script>
+</body>
+</html>
