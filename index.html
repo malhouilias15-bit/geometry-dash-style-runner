@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Snake Game</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #111;
+  font-family: Arial;
+}
+
+#game {
+  display: block;
+}
+
+#ui {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  color: white;
+}
+
+button {
+  margin: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.menu {
+  background: #222;
+  padding: 10px;
+  margin-top: 6px;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="ui">
+  <div id="score">Score: 0</div>
+
+  <button id="skinsBtn">Skins</button>
+  <button id="shopBtn">Shop</button>
+  <button id="statsBtn">Stats</button>
+
+  <div id="skinsMenu" class="menu hidden">
+    <button data-skin="green">Green</button>
+    <!-- DARK RED SKIN IS ADDED BY JS ONLY IN HARDEST MODE -->
+  </div>
+
+  <div id="shopMenu" class="menu hidden"></div>
+
+  <div id="statsMenu" class="menu hidden">
+    <div id="topScoreText"></div>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
