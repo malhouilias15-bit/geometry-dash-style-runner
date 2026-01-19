@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Snake Jump Game</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #111;
+    font-family: Arial;
+    color: white;
+  }
+
+  #ui {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+  }
+
+  button {
+    margin: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+
+  .menu {
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    margin-top: 5px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  canvas {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div id="ui">
+  <div id="score">Score: 0</div>
+
+  <button id="skinsBtn">Skins</button>
+  <button id="shopBtn">Shop</button>
+  <button id="statsBtn">Stats</button>
+
+  <div id="skinsMenu" class="menu hidden">
+    <button data-skin="green">Green</button>
+    <button data-skin="blue">Blue</button>
+    <button data-skin="purple">Purple</button>
+    <button id="darkRedSkinBtn" data-skin="darkred" class="hidden">
+      Dark Red (100 Hard)
+    </button>
+  </div>
+
+  <div id="shopMenu" class="menu hidden"></div>
+
+  <div id="statsMenu" class="menu hidden">
+    <div id="topScoreText"></div>
+    <div id="moneyText"></div>
+  </div>
+</div>
+
+<canvas id="game"></canvas>
+
+<script src="game.js"></script>
+</body>
+</html>
