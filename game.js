@@ -2,7 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 /* ================= OWNER ================= */
-const OWNER_USERNAME = "Snake_1234"; // <<< 
+const OWNER_USERNAME = "Snake_1234"; // <<<SlitherySerpent734 
 
 /* ================= RESIZE ================= */
 function resize() {
