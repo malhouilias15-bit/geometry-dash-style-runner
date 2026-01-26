@@ -437,11 +437,39 @@ function renderStats() {
 
 function renderNotepad() {
   noteMenu.innerHTML = `
-    <button onclick="unlockDark()">UNLOCK DARKRED</button>
+    <b>OWNER PAD</b><br><br>
+    <input id="giveUser" placeholder="username" style="width:140px"><br><br>
+    <button onclick="giveDarkred()">Give DarkRed</button>
   `;
 }
 
 function unlockDark() {
+  function giveDarkred() {
+  const user = document.getElementById("giveUser").value.trim();
+  if (!user) return;
+
+  let allUsers = JSON.parse(localStorage.getItem("snakeAllUsers")) || {};
+
+  if (!allUsers[user]) {
+    allUsers[user] = {
+      skins: { darkred: true }
+    };
+  } else {
+    allUsers[user].skins = allUsers[user].skins || {};
+    allUsers[user].skins.darkred = true;
+  }
+
+  localStorage.setItem("snakeAllUsers", JSON.stringify(allUsers));
+
+  // if it's YOU, unlock instantly
+  if (user === username) {
+    data.skins.darkred = true;
+    save();
+  }
+
+  alert(`DarkRed given to ${user}`);
+}
+
   data.skins.darkred = true;
   save();
 }
