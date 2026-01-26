@@ -163,30 +163,72 @@ function spawnNormal() {
 }
 
 function spawnHard() {
-  if (Math.random() > 0.5) return; // 50% chance
-
   const x = canvas.width + 150;
 
-  // BIG WALL
-  walls.push({ x, w: 70, h: 150, passed: false });
+  // ===== BIG WALL (40% chance) =====
+  if (Math.random() < 0.4) {
+    walls.push({ x, w: 70, h: 150, passed: false });
 
-  // ORBS LOWER
-  orbs.push({ x: x - 30, y: canvas.height - groundH - 90 });
-  orbs.push({ x: x, y: canvas.height - groundH - 130 });
+    // ONE ORB ATTACHED TO WALL (manual jump)
+    orbs.push({
+      x: x + 35,
+      y: canvas.height - groundH - 90
+    });
 
-  // SAFE PLATFORMS
-  platforms.push({ x: x + 20, y: canvas.height - groundH - 160, w: 60, h: 10 });
-  platforms.push({ x: x + 90, y: canvas.height - groundH - 190, w: 60, h: 10 });
+    // PLATFORM ABOVE (escape block)
+    platforms.push({
+      x: x + 10,
+      y: canvas.height - groundH - 150,
+      w: 80,
+      h: 10
+    });
 
-  // 6 SPIKES (ALWAYS KILL)
-  for (let i = 0; i < 6; i++) {
+    // 6 SPIKES + ORB (manual jump)
+    for (let i = 0; i < 6; i++) {
+      spikes.push({
+        x: x + 220 + i * 28,
+        y: canvas.height - groundH,
+        s: 22
+      });
+    }
+
+    orbs.push({
+      x: x + 260,
+      y: canvas.height - groundH - 40
+    });
+
+    return;
+  }
+
+  // ===== DOUBLE WALL + LOWER PLATFORM =====
+  if (Math.random() < 0.3) {
+    walls.push({ x, w: 30, h: 70, passed: false });
+    walls.push({ x: x + 40, w: 30, h: 70, passed: false });
+
+    platforms.push({
+      x: x - 5,
+      y: canvas.height - groundH - 60,
+      w: 120,
+      h: 10
+    });
+  }
+
+  // ===== TRIPLE / DOUBLE SPIKES =====
+  const spikeCount = Math.random() < 0.5 ? 3 : 2;
+  for (let i = 0; i < spikeCount; i++) {
     spikes.push({
-      x: x + 220 + i * 28,
+      x: x + 200 + i * 30,
       y: canvas.height - groundH,
       s: 22
     });
   }
+
+  // ===== NORMAL WALL =====
+  if (Math.random() < 0.5) {
+    walls.push({ x, w: 30, h: 60, passed: false });
+  }
 }
+
 
 // ================== INPUT ==================
 function jump() {
@@ -207,6 +249,12 @@ canvas.addEventListener("mousedown", jump);
 // ================== UPDATE ==================
 function update() {
   if (gameOver) return;
+
+  if (hardest && score >= 100) {
+  gameOver = true;
+  alert("🏆 YOU BEAT THE GAME!");
+  return;
+}
 
   player.vy += 0.8;
   player.y += player.vy;
@@ -276,9 +324,11 @@ function update() {
     hardest ? spawnHard() : spawnNormal();
     timer = 0;
   }
-
   if (score >= 10) speed = 7;
   if (score >= 70) speed = 8;
+if (score >= 70 && hardest) {
+  speed = 9;
+}
 
   if (spikeShield > 0) spikeShield--;
   if (scoreBoost > 0) scoreBoost--;
