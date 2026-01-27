@@ -184,12 +184,12 @@ function spawnHard() {
     });
 
     // ESCAPE PLATFORM
-    platforms.push({
-      x: x + 10,
-      y: canvas.height - groundH - 150,
-      w: 80,
-      h: 10
-    });
+   platforms.push({
+  x: x + 10,
+  y: canvas.height - groundH - 120, // LOWER = reachable
+  w: 90,
+  h: 12
+});
 
     // 6 SPIKES
     for (let i = 0; i < 6; i++) {
@@ -214,13 +214,12 @@ function spawnHard() {
     walls.push({ x, w: 30, h: 70, passed: false });
     walls.push({ x: x + 40, w: 30, h: 70, passed: false });
 
-    platforms.push({
-      x: x - 5,
-      y: canvas.height - groundH - 60,
-      w: 120,
-      h: 10
-    });
-  }
+   platforms.push({
+  x: x - 5,
+  y: canvas.height - groundH - 45, // LOWER
+  w: 140, // slightly wider
+  h: 12
+});
 
   // SPIKES
   const spikeCount = Math.random() < 0.5 ? 3 : 2;
