@@ -3,8 +3,9 @@
 // Geometry-Dash-Style Runner
 // FULL CLEAN REBUILD — ITCH.IO READY
 // ======================================================
-
-
+let ufoMode = false;
+let ufoGravity = 0.35;
+let portalSpawned = false;
 
 // ======================================================
 // ====================== CANVAS =========================
