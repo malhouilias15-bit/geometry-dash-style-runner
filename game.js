@@ -3,7 +3,9 @@
 // Geometry-Dash-Style Runner
 // FULL CLEAN REBUILD — ITCH.IO READY
 // ======================================================
-
+let ufoMode = false;
+let ufoGravity = 0.35;
+let portalSpawned = false;
 
 
 // ======================================================
@@ -189,6 +191,7 @@ let walls = [];
 let spikes = [];
 let platforms = [];
 let orbs = [];
+let portals = [];
 
 
 
@@ -330,18 +333,16 @@ function jump() {
     return;
   }
 
+  if (ufoMode) {
+    player.vy = -6; // spam click = fly
+    return;
+  }
+
   if (player.onGround) {
     player.vy = -12;
     player.onGround = false;
   }
 }
-
-document.addEventListener("keydown", e => {
-  if (e.code === "Space") jump();
-});
-
-canvas.addEventListener("mousedown", jump);
-
 
 
 // ======================================================
@@ -353,9 +354,19 @@ function update() {
     player.deathAnim += 2;
     return;
   }
+  
+// Spawn UFO portal at score 30 (HARDEST only)
+if (hardest && score >= 30 && !portalSpawned) {
+  portals.push({
+    x: canvas.width + 200,
+    y: canvas.height - groundH - 120,
+    r: 22
+  });
+  portalSpawned = true;
+}
 
   // Gravity
-  player.vy += GRAVITY;
+player.vy += ufoMode ? ufoGravity : gravity;
   player.y += player.vy;
 
   const groundY = canvas.height - GROUND_HEIGHT - player.radius;
@@ -382,6 +393,16 @@ function update() {
       player.touchingOrb = o;
     }
   });
+  
+// Portal detection
+portals.forEach(p => {
+  if (
+    Math.abs(player.x - p.x) < p.r &&
+    Math.abs(player.y - p.y) < p.r
+  ) {
+    ufoMode = true;
+  }
+});
 
   // PLATFORM COLLISION (SAFE)
   platforms.forEach(p => {
@@ -409,11 +430,11 @@ function update() {
       gameOver = true;
     }
 
-    if (!w.passed && player.x > w.x) {
-      score += scoreBoostTimer > 0 ? 2 : 1;
-      w.passed = true;
-    }
-  });
+   if (!w.passed && player.x > w.x) {
+  score++;
+  money += 1; // 💰 +1 money per score
+  w.passed = true;
+}
 
   // Spikes
   spikes.forEach(s => {
@@ -484,6 +505,15 @@ function draw() {
     canvas.width,
     GROUND_HEIGHT
   );
+  
+// Draw UFO portals
+ctx.strokeStyle = "#00ffff";
+ctx.lineWidth = 4;
+portals.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+  ctx.stroke();
+});
 
   // Walls
   ctx.fillStyle = "#888";
